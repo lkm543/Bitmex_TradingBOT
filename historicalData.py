@@ -1,15 +1,17 @@
-import requests
 import csv
 import datetime
-import time
 import os
 import re
-from selenium import webdriver
-import numpy as np
-import pandas as pd
+import time
+
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import requests
 from matplotlib.dates import date2num
+from selenium import webdriver
+
 #import talib
 #NOTICE: Check newest FR
 #TODO: Error in newest FR
