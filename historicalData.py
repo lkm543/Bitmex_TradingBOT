@@ -4,12 +4,10 @@ import os
 import re
 import time
 
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import requests
-from matplotlib.dates import date2num
 from selenium import webdriver
 
 #import talib
