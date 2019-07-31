@@ -10,10 +10,10 @@ import pandas as pd
 import requests
 from selenium import webdriver
 
-#import talib
-#NOTICE: Check newest FR
-#TODO: Error in newest FR
-#NOTICE: bin->1h, fixed or dynamic?
+# import talib
+# NOTICE: Check newest FR
+# TODO: Error in newest FR
+# NOTICE: bin->1h, fixed or dynamic?
 
 
 class historicalData():
