@@ -9,7 +9,6 @@ class status(kBar):
     position = 0
     positionPrice = 0
     revenueTotal = 0
-    volum = 0
     maxLoss = 0
     liquidationPrice = 0
     lastTradeTime = 0
@@ -39,80 +38,6 @@ class status(kBar):
         return uPNL
 
     def calculateFunding(self):
-        '''
-        if fundingRate != lastFR:
-            self.revenueTotal += abs(self.position * lastFR / 100)
-            self.revenueFunding += abs(self.position * lastFR / 100)
-            amount = (self.capital + self.revenueTotal) * 0.5
-            # amount = self.capital
-            if fundingRate < 0 and self.position <= 0:
-                vwap *= (1 - priceShift)
-                if self.position < 0:
-                    self.revenueThisTime = self.position * (
-                        vwap - self.positionPrice) / vwap
-                    if math.isnan(self.revenueThisTime):
-                        self.revenueThisTime = 0
-                    amountThisTime = amount - self.position
-                elif self.position == 0:
-                    self.revenueThisTime = 0
-                    amountThisTime = amount
-                self.revenueTotal += self.revenueThisTime
-                self.revenuePrice += self.revenueThisTime
-                fee = abs(amountThisTime) * 0.00025
-                self.revenueTotal += fee
-                self.revenueFee += fee
-                self.revenueHistory.append(self.revenueTotal)
-                self.turnOver += abs(amountThisTime)
-                self.position = 0.5 * amount
-                print(timestamp, "\tRevenue",
-                        round(self.revenueThisTime, 2), "(",
-                        round((vwap - self.positionPrice) / vwap * -100,
-                            2), "%)\tTotal Revenue:",
-                        round(self.revenueTotal, 2), "FR",
-                        round(fundingRate, 4), "Position:",
-                        round(self.position, 2), "\tBuy ",
-                        round(amountThisTime, 2), "\tUSD @", round(vwap, 2))
-                print("RevenuePrice:", round(self.revenuePrice,
-                                                2), "RevenueFee:",
-                        round(self.revenueFee, 2), "revenueFunding:",
-                        round(self.revenueFunding, 2), "TurnOver:",
-                        round(self.turnOver, 2))
-                self.positionPrice = vwap
-            elif fundingRate > 0 and self.position >= 0:
-                vwap *= (1 + priceShift)
-                if self.position > 0:
-                    self.revenueThisTime = self.position * (
-                        vwap - self.positionPrice) / vwap
-                    if math.isnan(self.revenueThisTime):
-                        self.revenueThisTime = 0
-                    amountThisTime = -1 * amount - self.position
-                elif self.position == 0:
-                    self.revenueThisTime = 0
-                    amountThisTime = -1 * amount
-                self.revenueTotal += self.revenueThisTime
-                self.revenuePrice += self.revenueThisTime
-                fee = abs(amountThisTime) * 0.00025
-                self.revenueTotal += fee
-                self.revenueFee += fee
-                self.revenueHistory.append(self.revenueTotal)
-                self.turnOver += abs(amountThisTime)
-                self.position = -0.5 * amount
-                print(timestamp, "\tRevenue",
-                        round(self.revenueThisTime, 2), "(",
-                        round((vwap - self.positionPrice) / vwap * 100,
-                            2), "%)\tTotal Revenue:",
-                        round(self.revenueTotal, 2), "FR",
-                        round(fundingRate, 4), "Position:",
-                        round(self.position, 2), "\tSell",
-                        round(amountThisTime, 2), "\tUSD @", round(vwap, 2))
-                print("RevenuePrice:", round(self.revenuePrice,
-                                                2), "RevenueFee:",
-                        round(self.revenueFee, 2), "revenueFunding:",
-                        round(self.revenueFunding, 2), "TurnOver:",
-                        round(self.turnOver, 2))
-                self.positionPrice = vwap
-            lastFR = fundingRate
-        '''
         pass
 
     def checkLiquidation(self):
