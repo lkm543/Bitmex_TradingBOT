@@ -1,16 +1,17 @@
-from status import status
 from record import historyRecord
-from kBar import kBar
 
 
-class order(status, kBar, historyRecord):
+class order(historyRecord):
     '''
         order = {
             'price': ,
             'amount:
         }
     '''
+    marketFee = 0.00075  # %
+    limitFee = -0.00025  # %
     orderBook = []
+    print_Order = True
 
     def cancelOrders(self, price, amount):
         self.orderBook = list(
@@ -22,7 +23,9 @@ class order(status, kBar, historyRecord):
     def cancelAllOrders(self):
         self.orderBook.clear()
 
-    def putMarketOrder(self, amount):
+    def putMarketOrder(self, amount, price=0):
+        if price == 0:
+            price = self.vwap
         '''
         if self.position < 0:
             vwap *= (1 - priceShift)
@@ -46,8 +49,15 @@ class order(status, kBar, historyRecord):
         order = {'price': price, 'amount': amount}
         self.orderBook.add(order)
 
-    def executeLimitOrder(self, kBar):
-        pass
+    def executeLimitOrder(self):
+        # o > c
+        # o -> h -> l -> c
+        if self.open > self.close:
+            pass
+        # o < c
+        # o -> l -> h -> c
+        else:
+            pass
 
     def getOrders(self):
         return self.orderBook
