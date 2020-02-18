@@ -244,7 +244,7 @@ class histData():
         histData.bin1mHistory = []
         self.crawlFR()
 
-        for year in range(fromYear, 2020):
+        for year in range(fromYear, 2021):
             startMonth = fromMonth if year == fromYear else 1
             dayOfMonth = histData.dayOfMonthYear if self.isYear(
                 year) else histData.dayOfMonthNotYear
