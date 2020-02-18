@@ -5,10 +5,7 @@ class status:
     turnOver = 0
     position = 0
     positionPrice = 0
-    revenueThisTime = 0
     revenueTotal = 0
-    revenueFee = 0
-    revenueFunding = 0
     revenuePrice = 0
     volum = 0
     maxLoss = 0
