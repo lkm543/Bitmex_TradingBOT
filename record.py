@@ -1,4 +1,5 @@
 from status import status
+# import matplotlib.pyplot as plt
 
 
 class historyRecord():
@@ -8,6 +9,13 @@ class historyRecord():
         pass
 
     def writeToCSV(self):
+        pass
+
+    def plotHistory(self):
+        # print("RevenuePrice:",self.revenuePrice,"RevenueFee:",self.revenueFee,"RevenueFee:",self.revenueFunding,"TurnOver:",self.turnOver)
+        # plt.plot(self.revenueHistory)
+        # plt.axis([0,15000000,0,6000])
+        # plt.show()
         pass
 
 
