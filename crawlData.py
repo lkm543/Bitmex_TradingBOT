@@ -297,65 +297,6 @@ class histData():
                                           str(len(result)), " data")
         self.writeFile(filename)
 
-    def genFeature(self, input, output):
-        print("Start to Generate Feature from", input, "to", output, "......")
-        type = [
-            "1min_", "5min_", "15min_", "30min_", "1hr_", "2hrs_", "4hrs_",
-            "12hrs_", "1d_"
-        ]
-        kLine = [
-            'timestamp', 'symbol', 'open', 'high', 'low', 'close', 'trades',
-            'volume', 'vwap', 'lastSize', 'turnover', 'homeNotional',
-            'foreignNotional'
-        ]
-        if os.path.exists(output):
-            os.remove(output)
-        # Write header into file
-        with open(output, 'w', newline='') as csvfile:
-            header = []
-            for i in range(0, len(type)):
-                header += [type[i] + element for element in kLine]
-            writer = csv.writer(csvfile)
-            writer.writerow(header + ['fundingRate'])
-
-        # Read and process data
-        rawData = pd.read_csv(input)
-
-        # Loop for each type
-        print([
-            rawData.loc(str(timestamp)) for timestamp in rawData['timestamp']
-        ])
-
-    def getOHLC(self, data, time):
-        print("Generating OHLC......")
-
-    def analysis(self, filename):
-        # TODO everday? varied with time?
-        self.rawData = pd.read_csv(filename, header=0)
-        for i in range(0, 365 * 1 + 150):
-            upDown = 0
-            upUp = 0
-            downUP = 0
-            downDown = 0
-            # len(self.rawData)
-            for j in range(i * 1440 + 1, (i + 1) * 1440):
-                lastOpen = self.rawData.loc[j - 1, 'open']
-                lastClose = self.rawData.loc[j - 1, 'close']
-                open = self.rawData.loc[j, 'open']
-                close = self.rawData.loc[j, 'close']
-                if lastOpen < lastClose and open > close:
-                    upDown += 1
-                elif lastOpen < lastClose and open < close:
-                    upUp += 1
-                elif lastOpen > lastClose and open < close:
-                    downUP += 1
-                elif lastOpen > lastClose and open > close:
-                    downDown += 1
-            print("upDown:", round(upDown / (upDown + upUp) * 100, 2), "upUp:",
-                  round(upUp / (upDown + upUp) * 100, 2), "downUP:",
-                  round(downUP / (downUP + downDown) * 100, 2), "downDown:",
-                  round(downDown / (downUP + downDown) * 100, 2))
-
     def plot(self, filename):
         rawData = pd.read_csv(filename)
         rawData['timestamp'] = pd.to_datetime(rawData['timestamp'])
@@ -371,5 +312,3 @@ if __name__ == '__main__':
     # history.crawlAll("ETH","ETH.csv")
     history.complement("BTC", "BTC.csv")
     history.complement("ETH", "ETH.csv")
-    # history.analysis("ETH.csv")
-    # history.analysis("BTC.csv")
