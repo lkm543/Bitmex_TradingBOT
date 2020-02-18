@@ -9,9 +9,13 @@ class status(kBar):
     position = 0
     positionPrice = 0
     revenueTotal = 0
+    revenueTotal_Fee = 0
+    revenueTotal_Price = 0
+    revenueTotal_Funding = 0
     maxLoss = 0
     liquidationPrice = 0
     lastTradeTime = 0
+    print_Funding = True
 
     def __init__(self, coinUsed='BTC', startCapital=1000):
         self.coin = coinUsed
@@ -37,8 +41,22 @@ class status(kBar):
         uPNL /= self.positionPrice
         return uPNL
 
-    def calculateFunding(self):
-        pass
+    def calculateFunding(self, FR):
+        self.revenueFunding = self.position * FR / -100
+        self.revenuePrice = 0
+        self.revenueFee = 0
+        self.revenueThisTime = self.revenueFunding
+        self.capital += self.revenueThisTime
+        self.revenueTotal += self.revenueThisTime
+        self.capital += self.revenueThisTime
+        self.revenueTotal_Funding += self.revenueFunding
+        if self.print_Funding:
+            print(f"{self.timestamp}: Funding executed"
+                  f", Funding rate: {round(FR, 3)}"
+                  f", Capital: {round(self.capital, 2)}"
+                  f"({round(self.revenueFunding, 3)})"
+                  f", Postion: {round(self.position,2)}"
+                  f"@{round(self.positionPrice,2)}")
 
     def checkLiquidation(self):
         if self.position == 0:
@@ -54,6 +72,9 @@ class status(kBar):
     def printStatus(self):
         print(f'Capital: {self.capital}')
         print(f'Total revenue: {self.revenueTotal}')
+        print(f'Total revenue(Price): {self.revenueTotal_Price}')
+        print(f'Total revenue(Funding): {self.revenueTotal_Funding}')
+        print(f'Total revenue(Fee): {self.revenueTotal_Fee}')
         print(f'Unrealised PNL: {self.unrealisedPNL(self.vwap)}')
         print(f'TurnOver: {self.turnOver}')
         print(f'Last trade time: {self.lastTradeTime}')
