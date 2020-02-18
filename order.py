@@ -23,8 +23,13 @@ class order(historyRecord):
             price = self.vwap
         if self.print_Order:
             self.calculteExecution(price, amount, 'Market')
-            print(f"{self.timestamp}:Market executed @{price} for ${amount}"
-                  f", Capital: {self.capital}")
+            print(f"{self.timestamp}:"
+                  f" Market executed @{round(price, 2)}"
+                  f" for ${round(amount, 2)}"
+                  f", Capital: {round(self.capital, 2)}"
+                  f"({round(self.revenueThisTime, 2)})"
+                  f", Postion: {round(self.position,2)}"
+                  f"@{round(self.positionPrice,2)}")
 
     def putLimitOrder(self, price, amount):
         self.orderBook[price] = amount
@@ -45,19 +50,29 @@ class order(historyRecord):
 
     def executeRangeLimit(self, fromPrice, toPrice):
         orderPrices = self.orderBook.keys()
+        orders_to_remove = []
         for orderPrice in orderPrices:
             if fromPrice < orderPrice < toPrice:
                 executeAmount = self.orderBook[orderPrice]
                 self.calculteExecution(orderPrice, executeAmount, 'Limit')
-                print(f"Limit executed @{orderPrice} for ${executeAmount}"
-                      f", Capital: {self.capital}")
-                self.removeOrder(orderPrice)
+                print(f"{self.timestamp}:"
+                      f" Limit executed @{round(orderPrice, 2)}"
+                      f" for ${round(executeAmount, 2)}"
+                      f", Capital: {round(self.capital, 2)}"
+                      f"({round(self.revenueThisTime, 2)})"
+                      f", Postion: {round(self.position,2)}"
+                      f"@{round(self.positionPrice,2)}")
+                orders_to_remove.append(orderPrice)
+        for order in orders_to_remove:
+            self.removeOrder(order)
 
     def calculteExecution(self, price, amount, orderType):
         if orderType == 'Market':
-            self.revenueFee += -1 * amount * self.marketFee
+            self.revenueFee = -1 * amount * self.marketFee
+            self.revenueTotal_Fee += self.revenueFee
         elif orderType == 'Limit':
-            self.revenueFee += -1 * amount * self.limitFee
+            self.revenueFee = 1 * amount * self.limitFee
+            self.revenueTotal_Fee += self.revenueFee
 
         if amount == 0:
             self.revenuePrice = 0
@@ -83,11 +98,12 @@ class order(historyRecord):
             # 減倉
             else:
                 self.revenuePrice = \
-                    amount * (price - self.positionPrice) / self.positionPrice
+                    amount * (self.positionPrice - price) / self.positionPrice
             self.position += amount
 
         self.revenueFunding = 0
         self.revenueThisTime = self.revenuePrice + self.revenueFee
+        self.revenueTotal_Price += self.revenuePrice
         self.revenueTotal += self.revenueThisTime
         self.capital += self.revenueThisTime
         self.amount = amount
