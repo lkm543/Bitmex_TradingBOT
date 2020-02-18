@@ -1,37 +1,16 @@
 import math
 import pandas as pd
 import matplotlib.pyplot as plt
+from order import order
+from crawlData import histData
 
 
-class backTest():
+class backTest(order):
     def __init__(self, filename):
         self.rawData = pd.read_csv(filename, header=0)
-        # self.rawData2 = pd.read_csv(filename,header=0)
-        # self.rawDataBTC = pd.read_csv("BTC.csv",header=0)
         # self.rawDataBTC.set_index('timestamp',inplace=True)
         self.rawData['timestamp'] = pd.to_datetime(self.rawData['timestamp'])
-        # self.rawData.index = self.rawData['timestamp']
-        self.principal = 1000
-        self.turnOver = 0
-        self.position = 0
-        self.positionPrice = 0
-        self.revenueThisTime = 0
-        self.revenue = 0
-        self.revenueFee = 0
-        self.revenueFunding = 0
-        self.revenuePrice = 0
-        self.open = 0
-        self.close = 0
-        self.high = 0
-        self.low = 0
-        self.vwap = 0
-        self.volum = 0
-        self.maxLoss = 0
-        self.liquidationPrice = 0
-        self.lastTradeTime = 0
         self.timestamp = 0
-        self.revenueHistory = []
-        self.limitOrder = {}
 
     def isYear(self, year):
         if year % 4 == 0 & year % 100 != 0:
@@ -40,36 +19,6 @@ class backTest():
             return True
         else:
             return False
-
-    def cancelOrders(self, price, amount):
-        print('')
-
-    def cancelAllOrders(self):
-        print('')
-
-    def putMarketOrder(self, amount):
-        print('')
-
-    def putLimitOrders(self, price, amount):
-        print('')
-
-    def printOrders(self):
-        print('')
-
-    def printStatus(self):
-        print('')
-
-    def printSummary(self):
-        self.printStatus()
-        # Win Rate
-        # mean,sd of win/loss
-        print('')
-
-    def writeToCSV(self):
-        print('')
-
-    def getLiquidationPrice(self):
-        print('')
 
     def strategy(self, amount):
         print('')
@@ -101,9 +50,9 @@ class backTest():
             '''
             # fundingRate = self.rawDataBTC.loc[str(timestamp2),'fundingRate']
             if fundingRate != lastFR:
-                self.revenue += abs(self.position * lastFR / 100)
+                self.revenueTotal += abs(self.position * lastFR / 100)
                 self.revenueFunding += abs(self.position * lastFR / 100)
-                amount = (self.principal + self.revenue) * 0.5
+                amount = (self.principal + self.revenueTotal) * 0.5
                 # amount = self.principal
                 if fundingRate < 0 and self.position <= 0:
                     vwap *= (1 - priceShift)
@@ -116,18 +65,19 @@ class backTest():
                     elif self.position == 0:
                         self.revenueThisTime = 0
                         amountThisTime = amount
-                    self.revenue += self.revenueThisTime
+                    self.revenueTotal += self.revenueThisTime
                     self.revenuePrice += self.revenueThisTime
                     fee = abs(amountThisTime) * 0.00025
-                    self.revenue += fee
+                    self.revenueTotal += fee
                     self.revenueFee += fee
-                    self.revenueHistory.append(self.revenue)
+                    self.revenueHistory.append(self.revenueTotal)
                     self.turnOver += abs(amountThisTime)
                     self.position = 0.5 * amount
                     print(timestamp, "\tRevenue",
                           round(self.revenueThisTime, 2), "(",
-                          round((vwap - self.positionPrice) / vwap * -100, 2),
-                          "%)\tTotal Revenue:", round(self.revenue, 2), "FR",
+                          round((vwap - self.positionPrice) / vwap * -100,
+                                2), "%)\tTotal Revenue:",
+                          round(self.revenueTotal, 2), "FR",
                           round(fundingRate, 4), "Position:",
                           round(self.position, 2), "\tBuy ",
                           round(amountThisTime, 2), "\tUSD @", round(vwap, 2))
@@ -148,18 +98,19 @@ class backTest():
                     elif self.position == 0:
                         self.revenueThisTime = 0
                         amountThisTime = -1 * amount
-                    self.revenue += self.revenueThisTime
+                    self.revenueTotal += self.revenueThisTime
                     self.revenuePrice += self.revenueThisTime
                     fee = abs(amountThisTime) * 0.00025
-                    self.revenue += fee
+                    self.revenueTotal += fee
                     self.revenueFee += fee
-                    self.revenueHistory.append(self.revenue)
+                    self.revenueHistory.append(self.revenueTotal)
                     self.turnOver += abs(amountThisTime)
                     self.position = -0.5 * amount
                     print(timestamp, "\tRevenue",
                           round(self.revenueThisTime, 2), "(",
-                          round((vwap - self.positionPrice) / vwap * 100, 2),
-                          "%)\tTotal Revenue:", round(self.revenue, 2), "FR",
+                          round((vwap - self.positionPrice) / vwap * 100,
+                                2), "%)\tTotal Revenue:",
+                          round(self.revenueTotal, 2), "FR",
                           round(fundingRate, 4), "Position:",
                           round(self.position, 2), "\tSell",
                           round(amountThisTime, 2), "\tUSD @", round(vwap, 2))
@@ -175,12 +126,12 @@ class backTest():
             vwap *= (1 - priceShift)
             revenueThisTime = \
                 self.position * (vwap - self.positionPrice) / vwap
-            self.revenue += revenueThisTime
+            self.revenueTotal += revenueThisTime
             self.revenuePrice += revenueThisTime
-            self.revenueHistory.append(self.revenue)
+            self.revenueHistory.append(self.revenueTotal)
             print(timestamp, "\tRevenue", round(revenueThisTime, 2), "(",
                   round((vwap - self.positionPrice) / vwap * -100, 2),
-                  "%)\tTotal Revenue:", round(self.revenue, 2), "FR",
+                  "%)\tTotal Revenue:", round(self.revenueTotal, 2), "FR",
                   round(fundingRate, 4), "Position:", round(self.position,
                                                             2), "\tBuy ",
                   round(amountThisTime, 2), "\tUSD @", round(vwap, 2))
@@ -193,12 +144,12 @@ class backTest():
             vwap *= (1 + priceShift)
             revenueThisTime = \
                 self.position * (vwap - self.positionPrice) / vwap
-            self.revenue += revenueThisTime
+            self.revenueTotal += revenueThisTime
             self.revenuePrice += revenueThisTime
-            self.revenueHistory.append(self.revenue)
+            self.revenueHistory.append(self.revenueTotal)
             print(timestamp, "\tRevenue", round(revenueThisTime, 2), "(",
                   round((vwap - self.positionPrice) / vwap * 100, 2),
-                  "%)\tTotal Revenue:", round(self.revenue, 2), "FR",
+                  "%)\tTotal Revenue:", round(self.revenueTotal, 2), "FR",
                   round(fundingRate, 4), "Position:", round(self.position,
                                                             2), "\tSell",
                   round(amountThisTime, 2), "\tUSD @", round(vwap, 2))
@@ -215,5 +166,9 @@ class backTest():
 
 if __name__ == '__main__':
     # TODO: VWAP=NA?
+    history = histData()
+    history.complement("BTC", "BTC.csv")
+    history.complement("ETH", "ETH.csv")
+
     test = backTest("BTC.csv")
     test.start()
