@@ -16,10 +16,10 @@ class kBar():
         self.vwap = vwap
 
     def printKBar(self):
-        print(f"Timestamp: {self.timestamp}, \
-            Open: {self.open},\
-            High: {self.high}, \
-            Low: {self.low}, \
-            Close: {self.close}, \
-            Volum: {self.volum}, \
-            Vwap: {self.vwap}")
+        print(f"Timestamp: {self.timestamp},"
+              f"Open: {self.open},"
+              f"High: {self.high},"
+              f"Low: {self.low},"
+              f"Close: {self.close},"
+              f"Volum: {self.volum},"
+              f"Vwap: {self.vwap}")
