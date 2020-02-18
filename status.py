@@ -116,6 +116,8 @@ class status(kBar):
         pass
 
     def checkLiquidation(self):
+        if self.position == 0:
+            return False
         liquidationPrice = self.getLiquidationPrice()
         if self.position > 0 and self.low <= liquidationPrice:
             return True
@@ -127,7 +129,7 @@ class status(kBar):
     def printStatus(self):
         print(f'Capital: {self.capital}')
         print(f'Total revenue: {self.revenueTotal}')
-        print(f'Unrealised PNL: {self.unrealisedPNL()}')
+        print(f'Unrealised PNL: {self.unrealisedPNL(self.vwap)}')
         print(f'TurnOver: {self.turnOver}')
         print(f'Last trade time: {self.lastTradeTime}')
         print(f'Max loss: {self.maxLoss}')
