@@ -28,19 +28,6 @@ class histData():
     def requestJSON(self, url):
         return requests.get(url).json()
 
-    '''
-    def requestNewestFR(self,
-                        url="https://www.bitmex.com/app/contract/XBTUSD"):
-        if self.coin == "ETH":
-            url = "https://www.bitmex.com/app/contract/ETHUSD"
-        driver = webdriver.Chrome('./chromedriver')
-        driver.maximize_window()
-        driver.get(url)
-        newestFR = re.findall(
-            r"Funding Rate</span></td><td class=\"gridCell\">(.+?)%",
-            driver.page_source)
-        return (float(newestFR[0]))
-    '''
     def getFundingRate(self, timestamp):
         timestamp_datetime = datetime.datetime.strptime(
             timestamp, '%Y-%m-%dT%H:%M:00.000Z')
@@ -69,7 +56,10 @@ class histData():
             print("Get funding rate error!")
 
         timeFR = str(timestamp)[:10] + tmpStr
-        return histData.fundingRateHistory[timeFR]
+        if timeFR in histData.fundingRateHistory.keys():
+            return histData.fundingRateHistory[timeFR]
+        else:
+            return 0
 
     def writeFile(self, filename):
         with open(filename, 'a', newline='') as csvfile:
@@ -117,38 +107,7 @@ class histData():
                     go = False
                     break
             i += 1
-        '''
-        # Get newest funding rate
-        utcNow = datetime.datetime.utcnow()
-        hr = utcNow.hour
-        min = utcNow.minute
-        sec = utcNow.second
-        micro = utcNow.microsecond
-        secondsOfDay = hr * 3600 + min * 60 + sec + micro / 1000000
 
-        # Get Funding Rate
-        # a.m.04:00 to p.m. 12:00
-        if secondsOfDay <= 43200 and secondsOfDay > 14400:
-            tmpStr = 'T12:00:00.000Z'
-        # p.m.12:00 to p.m. 20:00
-        elif secondsOfDay <= 72000 and secondsOfDay > 43200:
-            tmpStr = 'T20:00:00.000Z'
-        # a.m.00:00 to a.m. 04:00
-        elif secondsOfDay <= 14400:
-            tmpStr = 'T04:00:00.000Z'
-        # p.m.20:00 to a.m. 00:00
-        elif secondsOfDay > 72000:
-            tmpStr = 'T04:00:00.000Z'
-            utcNow = datetime.datetime.strptime(
-                str(utcNow)[:10], '%Y-%m-%d') + datetime.timedelta(days=1)
-        else:
-            print("Get funding rate error!")
-        timeFR = str(utcNow)[:10] + tmpStr
-        newestFR = self.requestNewestFR()
-        historicalData.fundingRateHistory[timeFR] = newestFR
-        print("The newest FR of", timeFR, " is:", newestFR,
-              "%,please check it in advance")
-        '''
     def crawlAll(self,
                  Coin="BTC",
                  filename="BTC.csv",
