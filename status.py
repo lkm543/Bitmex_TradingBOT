@@ -48,7 +48,6 @@ class status(kBar):
         self.revenueThisTime = self.revenueFunding
         self.capital += self.revenueThisTime
         self.revenueTotal += self.revenueThisTime
-        self.capital += self.revenueThisTime
         self.revenueTotal_Funding += self.revenueFunding
         if self.print_Funding:
             print(f"{self.timestamp}: Funding executed"
