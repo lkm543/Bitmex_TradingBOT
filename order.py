@@ -21,8 +21,8 @@ class order(historyRecord):
     def putMarketOrder(self, amount, price=0):
         if price == 0:
             price = self.vwap
+        self.calculteExecution(price, amount, 'Market')
         if self.print_Order:
-            self.calculteExecution(price, amount, 'Market')
             print(f"{self.timestamp}:"
                   f" Market executed @{round(price, 2)}"
                   f" for ${round(amount, 2)}"
@@ -55,23 +55,24 @@ class order(historyRecord):
             if fromPrice < orderPrice < toPrice:
                 executeAmount = self.orderBook[orderPrice]
                 self.calculteExecution(orderPrice, executeAmount, 'Limit')
-                print(f"{self.timestamp}:"
-                      f" Limit executed @{round(orderPrice, 2)}"
-                      f" for ${round(executeAmount, 2)}"
-                      f", Capital: {round(self.capital, 2)}"
-                      f"({round(self.revenueThisTime, 2)})"
-                      f", Postion: {round(self.position,2)}"
-                      f"@{round(self.positionPrice,2)}")
+                if self.print_Order:
+                    print(f"{self.timestamp}:"
+                          f" Limit executed @{round(orderPrice, 2)}"
+                          f" for ${round(executeAmount, 2)}"
+                          f", Capital: {round(self.capital, 2)}"
+                          f"({round(self.revenueThisTime, 2)})"
+                          f", Postion: {round(self.position,2)}"
+                          f"@{round(self.positionPrice,2)}")
                 orders_to_remove.append(orderPrice)
         for order in orders_to_remove:
             self.removeOrder(order)
 
     def calculteExecution(self, price, amount, orderType):
         if orderType == 'Market':
-            self.revenueFee = -1 * amount * self.marketFee
+            self.revenueFee = -1 * abs(amount) * self.marketFee
             self.revenueTotal_Fee += self.revenueFee
         elif orderType == 'Limit':
-            self.revenueFee = 1 * amount * self.limitFee
+            self.revenueFee = -1 * abs(amount) * self.limitFee
             self.revenueTotal_Fee += self.revenueFee
 
         if amount == 0:
